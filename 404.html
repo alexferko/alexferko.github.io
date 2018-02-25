@@ -1,0 +1,105 @@
+---
+permalink: /404.html
+---
+<html>
+<head>
+  <title>NO EST BUENO</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <audio id="track" src="404/super.mp3" loop="true" preload="auto"></audio>
+  <script>
+
+(function($) {
+  $(function() {
+    var audio = $('#track').get()[0];
+    var $container = $('#container');
+    var $images = [$('#image1'), $('#image2'), $('#image3')];
+
+    var lastTime = new Date().getTime();
+    var started = false;
+    var t = 0;
+
+    function bezier(t, start, length) {
+      var q = Math.min(Math.max((t - start) / length, 0), 1);
+      return q * q * q + 3 * (1 - q) * q * q;
+    }
+
+    function advance() {
+      var currTime = new Date().getTime();
+
+      if (started) {
+        t += (currTime - lastTime) / 1000;
+      }
+      lastTime = currTime;
+
+      var cx = $container.width(),
+          cy = $container.height();
+      var sx = $images[0].width(),
+          sy = $images[0].height();
+
+      var q = bezier(t, 0, 2);
+          q2 = bezier(t, 4, 3);
+
+      var i = 0;
+      for (i = 0; i < 3; i++) {
+        var s = i * (2 * Math.PI / 3),
+            r = q * (200 + 200 * 0.5 * (1 + Math.sin(0.3 * 0.5 * t + q2 * s))),
+            x = 0.5 * cx - 0.5 * sx + r * Math.sin(t + s + 0.5),
+            y = 0.5 * cy - 0.5 * sy + r * Math.cos(t + s + 0.5);
+
+        $images[i].css({
+            position: 'absolute',
+            left: x,
+            top: y
+        });
+      }
+
+      setTimeout(advance, 1000 / 24);
+    }
+
+    audio.play();
+    audio.addEventListener("timeupdate", function() {
+      if (!started && audio.currentTime > 4) {
+        started = true;
+      }
+    });
+
+    advance();
+  });
+})(jQuery);
+
+  </script>
+  <style>
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+}
+
+#container {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.center {
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+  </style>
+</head>
+<body>
+  <div id="container">
+    <img id="image1" src="404/blerg.gif">
+    <img id="image2" src="404/blerg.gif">
+    <img id="image3" src="404/blerg.gif">
+    <img class="center" src="404/blerg.gif">
+  </div>
+</body>
+</html>
